@@ -2,12 +2,13 @@ sample_preferences = {}
 
 def main():
 
-    print('Welcome to the QFD helper tool for prioritaising the Custom Requirements your team highlighted during the assessment\n')
+    print('\nWelcome to the QFD helper tool for prioritaising the Custom Requirements your team highlighted during the assessment\n')
     print("Let's start by SETTING UP THE CUSTOMER REQUIREMENTS ...")
 
     c_req = set_labels()
     if c_req is None:
-        return 
+        input('***Press <ENTER> to restart ...')
+        return True
 
     sel = input('\nHow do you want to run the procedure?\n[1] Run interviews\n[2] Use a pre-existing collection of answers\n\nchoose from the menu : ')
     while sel not in ('1, 2'):
@@ -18,7 +19,8 @@ def main():
         results = analyze(run_interviews(set_partecipants(), c_req))
     else:   
         print('this feature will be released soon!')
-        return None
+        input('***Press <ENTER> to restart ...')
+        return True
 
     print('\n++++++++ [ RESULTS ] ++++++++\n')
     print('id\tdescr\tabsolute importance [1-5]')
@@ -41,6 +43,10 @@ def main():
                     else:
                         pref_order += f'CR{x[0]} )'
             print(f'ID{i+1}:\t{pref_order}')
+
+    if input('\nWe hope that was helpful.\nIf you want to re-run the whole procedure please write <repeat> otherwise press <ENTER> to close the program: ') == 'repeat':
+        return True
+    return False
 
 def set_labels():
     cr_labels = []
@@ -191,5 +197,9 @@ def compute_scale(Z_matrix):
 
     return scale_positions, Z_matrix
 
-
-main()
+input('\n** Press <ENTER> to start ... ')
+while main():
+    print('\ncleaning up...')
+    print('restarting ...')
+    print('----------------------------------------------------------------------------------------------------')
+    continue
