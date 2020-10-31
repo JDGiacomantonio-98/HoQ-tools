@@ -1,3 +1,5 @@
+sample_preferences = {}
+
 def main():
 
     print('Welcome to the QFD helper tool for prioritaising the Custom Requirements your team highlighted during the assessment\n')
@@ -25,6 +27,20 @@ def main():
         cr.append(results[0][i])
         print(f'CR{cr[0]}\t{cr[1]}\t{cr[2]}')
 
+    if input('\nDo you want to print the preference distribution of each survied customer? (y/n) ') in ('y','Y'):
+        print('\n')
+        for i, prf in enumerate(sample_preferences.values()):
+            pref_order = '( '
+            for j, x in enumerate(prf.values()):
+                if j <= 4 and len(x) != 0:
+                    if pref_order != '( ':
+                        pref_order += ' > ( '
+                    if len(x) > 1:
+                        for k, y in enumerate(x):
+                            pref_order += f'CR{y} = ' if k+1 < len(x) else f'CR{y} )'
+                    else:
+                        pref_order += f'CR{x[0]} )'
+            print(f'ID{i+1}:\t{pref_order}')
 
 def set_labels():
     cr_labels = []
@@ -80,7 +96,7 @@ def run_interviews(partecipants, survey_items):
                 print('please choose a correct value for the list.')
                 scr = input('your opinion : ')
             ans.append([cr[0], scr])
-        survey_ans[p+1] = create_B_matrix(ans)
+        survey_ans[p], sample_preferences[p] = create_B_matrix(ans)
 
     return survey_ans
 
@@ -97,7 +113,7 @@ def create_B_matrix(answers):
 
     for ans in answers:
         preferences[ans[1]].append(ans[0])  # sorts interviewed preferences in ascending order
-
+    
     for x in answers:
         B_row = []
         for y in answers:
@@ -110,7 +126,7 @@ def create_B_matrix(answers):
 
         B_matrix.append(B_row)
 
-    return B_matrix
+    return B_matrix, preferences
 
 
 def analyze(survey_ans):
@@ -120,9 +136,9 @@ def analyze(survey_ans):
 
 def create_F_matrix(survey_ans):
 
-    F_matrix = survey_ans[1]
+    F_matrix = survey_ans[0]
     for i in survey_ans:
-        if i == 1:
+        if i == 0:
             continue
         for j, row in enumerate(survey_ans[i]):
             for k, x in enumerate(row):
@@ -140,7 +156,7 @@ def create_P_matrix(F_matrix, partecipants):
 
 
 def convert_in_Z(P_matrix):
-    import scipy.stats as st #the scipy library is required to run this code
+    import scipy.stats as st # the scipy library is required to run this code
 
     for i, row in enumerate(P_matrix):
         for k, x in enumerate(row):
