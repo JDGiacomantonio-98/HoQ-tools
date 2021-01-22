@@ -16,12 +16,17 @@ def main():
         sel = input('\nHow do you want to run the procedure?\n[1] Run interviews\n[2] Use a pre-existing collection of answers\n\nchoose from the menu : ')
 
     if sel == '1':
-        results = analyze(run_interviews(set_partecipants(), c_req))
+        print_results(analyze(run_interviews(set_partecipants(), c_req)), c_req)
+        if input('\nWe hope that was helpful.\nIf you want to re-run the whole procedure please write <repeat> otherwise press <ENTER> to close the program: ') == 'repeat':
+            return True
+        return False
     else:   
         print('this feature will be released soon!')
         input('***Press <ENTER> to restart ...')
         return True
 
+
+def print_results(results, c_req):
     print('\n++++++++ [ RESULTS ] ++++++++\n')
     print('id\tdescr\tabsolute importance [1-5]')
 
@@ -43,10 +48,6 @@ def main():
                     else:
                         pref_order += f'CR{x[0]} )'
             print(f'ID{i+1}:\t{pref_order}')
-
-    if input('\nWe hope that was helpful.\nIf you want to re-run the whole procedure please write <repeat> otherwise press <ENTER> to close the program: ') == 'repeat':
-        return True
-    return False
 
 def set_labels():
     cr_labels = []
@@ -196,10 +197,13 @@ def compute_scale(Z_matrix):
     Z_matrix.append(means)
 
     return scale_positions, Z_matrix
+    
+def run():
+    input('\n** Press <ENTER> to start ... ')
+    while main():
+        print('\ncleaning up...')
+        print('restarting ...')
+        print('----------------------------------------------------------------------------------------------------')
+        continue
 
-input('\n** Press <ENTER> to start ... ')
-while main():
-    print('\ncleaning up...')
-    print('restarting ...')
-    print('----------------------------------------------------------------------------------------------------')
-    continue
+run()
